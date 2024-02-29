@@ -18,3 +18,5 @@ Example scripts can be run as follows:
 python examples/simple_example_lorenz.py
 ```
 At this time, `simple_example_lorenz.py` and `VPT_distribution_lorenz.py` are known to work well; other example scripts may be incomplete and/or may demand significant computing power and memory resources to execute.
+
+To experiment with other dynamical systems (ex. as done in `other_systems.py`), you must pre-generate a long trajectory of that dynamical system so that random initial conditions can be sampled from the attractor. To do so, modify the main function of `hybrid_rc_ngrc/long_trajectory.py` to include the desired dynamical system from the dysts package, and run the script.
