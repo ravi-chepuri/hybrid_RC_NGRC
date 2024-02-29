@@ -94,4 +94,4 @@ for idx, system in enumerate(systems_and_VPTs):
 
 axs[0].set_ylabel('Valid prediction time')
 
-plt.savefig('other_systems_intdt0p1.svg', dpi=300)
+plt.savefig('other_systems.png', dpi=300)

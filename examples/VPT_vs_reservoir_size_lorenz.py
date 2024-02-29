@@ -69,4 +69,4 @@ plt.legend([handles[2], (handles[0], handles[1]), handles[3]], ['RC', 'NGRC', 'H
 # plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
 
 plt.tight_layout()
-plt.savefig('4.svg', dpi=300)
+plt.savefig('4.png', dpi=300)

@@ -34,4 +34,4 @@ for idx, noise in enumerate(tqdm(noises)):
 
 hybrid_rc_ngrc.plotting.VPT_vs_hyperparam(noises_std, trials, RC_data, RC_data_std, NGRC_data, NGRC_data_std, 
                                     hyb_data, hyb_data_std, xlabel='Noise std. dev. $\gamma$', xscale='log',
-                                    fname='VPT_vs_noise_lorenz.eps')
+                                    fname='VPT_vs_noise_lorenz.png')
