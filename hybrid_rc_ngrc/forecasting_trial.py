@@ -11,7 +11,7 @@ from dysts.base import DynSys
 
 def do_prediction_trial(system: DynSys, h: Hyperparameters, 
                         attractor_means_and_stds=None,
-                        return_VPTs=False, return_diverge_times=False):
+                        return_VPTs=False, return_diverge_times=False, return_avg_map_err=False):
 
     traj, t = dyn_systems.make_trajectory_with_random_init_cond(system, h.train_length + h.prediction_steps, h.dt, 
                                                                 int_dt=h.int_dt)
@@ -77,5 +77,22 @@ def do_prediction_trial(system: DynSys, h: Hyperparameters,
         diverge_time_NGRC    = prediction_analysis.diverge_time(predictions_NGRC, t_pred)
         diverge_time_hyb     = prediction_analysis.diverge_time(predictions_hyb, t_pred)
         return diverge_time_RC, diverge_time_NGRC, diverge_time_hyb
+    
+    if return_avg_map_err:
+        norm_means = np.squeeze(attractor_means) if attractor_means_and_stds is not None else np.squeeze(train_mean)
+        norm_stds = np.squeeze(attractor_stds) if attractor_means_and_stds is not None else np.squeeze(train_std)
+        map_err_RC   = prediction_analysis.mean_normalized_map_error(predictions_RC, train_data, system, h.dt, 
+                                                                   int_dt=h.int_dt, method='RK45', num_steps=1000,
+                                                                   norm_means=norm_means, norm_stds=norm_stds)
+        map_err_NGRC = prediction_analysis.mean_normalized_map_error(predictions_NGRC, train_data, system, h.dt, 
+                                                                   int_dt=h.int_dt, method='RK45', num_steps=1000,
+                                                                   norm_means=norm_means, norm_stds=norm_stds)
+        map_err_hyb  = prediction_analysis.mean_normalized_map_error(predictions_hyb, train_data, system, h.dt, 
+                                                                   int_dt=h.int_dt, method='RK45', num_steps=1000,
+                                                                   norm_means=norm_means, norm_stds=norm_stds)
+        map_err_ctrl = prediction_analysis.mean_normalized_map_error(actual, train_data, system, h.dt, 
+                                                                   int_dt=h.int_dt, method='RK45', num_steps=1000,
+                                                                   norm_means=norm_means, norm_stds=norm_stds)
+        return map_err_RC, map_err_NGRC, map_err_hyb, map_err_ctrl
 
     return t_pred, actual, predictions_RC, predictions_NGRC, predictions_hyb
