@@ -25,7 +25,8 @@ def random_init_cond(system: DynSys):
     return sampled_point
 
 
-def make_trajectory_with_random_init_cond(system: DynSys, num_timesteps, dt, int_dt=0.001, epsilon=1e-3, method='RK45'):
+def make_trajectory_with_random_init_cond(system: DynSys, num_timesteps, dt, int_dt=0.001, epsilon=1e-3, method='RK45', 
+                                          component=None):
 
     # check that integration time step is an integer divisor of the desired time step
     assert abs(dt/int_dt - round(dt/int_dt)) < 1e-12, f'desired time step {dt} must be an integer multiple of integration time step {int_dt}'
@@ -47,6 +48,9 @@ def make_trajectory_with_random_init_cond(system: DynSys, num_timesteps, dt, int
     traj = traj[:, -num_timesteps*multiple:]
     traj = traj[:, ::multiple]  # subsample to desired time step
     t = np.linspace(dt, num_timesteps*dt, num_timesteps)
+
+    if component is not None:
+        return np.expand_dims(traj[component], 0), t
     return traj, t
 
 

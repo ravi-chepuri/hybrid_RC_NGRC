@@ -40,6 +40,8 @@ for idx, noise in enumerate(tqdm(noises)):
 colors = hybrid_rc_ngrc.plotting.COLORS
 
 plt.figure(figsize=(3*1.5, 2.5*1.5))
+
+# ALERT!!! change so that it plots std. dev.s on axis, not variance
     
 plt.errorbar(noises, RC_data, yerr=RC_data_std/np.sqrt(trials), color=colors[1], marker='s', 
                 markersize=4, ls='none', linewidth=1, label='RC')

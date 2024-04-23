@@ -8,7 +8,8 @@ from dysts.flows import Lorenz
 from context import hybrid_rc_ngrc
 
 
-reservoir_sizes = np.linspace(25, 500, 20).astype(int)  # changed from (50, 1000, 20)
+# reservoir_sizes = np.linspace(10, 200, 20).astype(int)  # changed from (50, 1000, 20)
+reservoir_sizes = np.linspace(50, 500, 20).astype(int)
 trials = 64
 
 RC_data         = np.zeros(reservoir_sizes.shape)
@@ -44,7 +45,7 @@ ls='solid'
 linewidth=1
 
 plt.axhline(NGRC_data[0], color=COLORS[2], ls='solid', linewidth=linewidth, label='NGRC')
-plt.fill_between(np.linspace(0, 1050, 5), NGRC_data[0]-NGRC_data_std[0]/np.sqrt(trials), 
+plt.fill_between(np.linspace(-10000, 10000, 5), NGRC_data[0]-NGRC_data_std[0]/np.sqrt(trials), 
                  NGRC_data[0]+NGRC_data_std[0]/np.sqrt(trials), color=COLORS[2], alpha=0.25, label='NGRC')
     
 plt.errorbar(reservoir_sizes, RC_data, yerr=RC_data_std/np.sqrt(trials), color=COLORS[1], marker='s', 
@@ -55,7 +56,7 @@ plt.errorbar(reservoir_sizes, hyb_data, yerr=hyb_data_std/np.sqrt(trials), color
             markersize=4, ls=ls, linewidth=linewidth, label='Hybrid RC-NGRC')
 
 # plt.xlim((25, 1025))
-plt.xlim((12.5, 512.5))
+plt.xlim((0, 550))
 
 
 plt.xlabel('Number of nodes in reservoirs $N$')

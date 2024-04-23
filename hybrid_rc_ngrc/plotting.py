@@ -45,6 +45,7 @@ def valid_prediction_time_violins(VPTs_RC, VPTs_NGRC, VPTs_hyb,
     violin = plt.violinplot([VPTs_RC, VPTs_NGRC, VPTs_hyb], showmedians=True, quantiles=[[0.25, 0.75]]*3)
     plt.xticks(ticks=[1,2,3], labels=['RC', 'NGRC', 'Hybrid RC-NGRC'])
     plt.ylabel('Valid prediction time (Lyapunov times)')
+    plt.ylim(bottom=0)
 
     violin['bodies'][0].set_facecolor(colors[1])
     violin['bodies'][1].set_facecolor(colors[2])
