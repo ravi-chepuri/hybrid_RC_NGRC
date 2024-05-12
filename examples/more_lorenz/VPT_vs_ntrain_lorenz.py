@@ -20,10 +20,14 @@ trials = 64
 RC_transient_cutoff_frac = 0.25
 t_sync_multiple = 10  # take approx 10 sync times so that "error" in reservoir state is on order of e^-10 \approx 5e-5
 
+# for scaling regularization with training data length, beta = n_train * beta_tilde
+beta_tilde = 1e-12
+
 # hard case
 
 dt = 0.06
-N = 100
+N1 = 100
+N = N1
 
 t_sync = 2.131552332975897  # empirically determined sync time, approx. 2
 
@@ -40,7 +44,7 @@ for idx, training_data_amount in enumerate(tqdm(training_data_amounts)):
     RC_transient = int(min(RC_transient, t_sync_multiple * t_sync))
 
     h = hybrid_rc_ngrc.Hyperparameters(train_length=training_data_amount, discard_transient_length=RC_transient,
-                                       dt=dt, N=N)
+                                       dt=dt, N=N, beta=beta_tilde*training_data_amount)
     VPT_results = np.array(Parallel(n_jobs=-1)(delayed(hybrid_rc_ngrc.do_prediction_trial)(Lorenz, h, return_VPTs=True,
                                                                             attractor_means_and_stds=(attractor_means, attractor_stds)) 
                               for trial in range(trials)))
@@ -57,7 +61,8 @@ for idx, training_data_amount in enumerate(tqdm(training_data_amounts)):
 # easy case
     
 dt = 0.01
-N = 1000
+N2 = 500
+N = N2
 
 t_sync = 2.2482971691228375  # empirically determined sync time, approx. 2
 
@@ -74,7 +79,8 @@ for idx, training_data_amount in enumerate(tqdm(training_data_amounts)):
     RC_transient = int(min(RC_transient, t_sync_multiple * t_sync))
 
     h = hybrid_rc_ngrc.Hyperparameters(train_length=training_data_amount, discard_transient_length=RC_transient,
-                        dt=dt, N=N)
+                        dt=dt, N=N, beta=beta_tilde*training_data_amount)
+
     VPT_results = np.array(Parallel(n_jobs=-1)(delayed(hybrid_rc_ngrc.do_prediction_trial)(Lorenz, h, return_VPTs=True,
                                                                             attractor_means_and_stds=(attractor_means, attractor_stds)) 
                               for trial in range(trials)))
@@ -109,13 +115,15 @@ axs[1].errorbar(training_data_amounts, NGRC_data_2, yerr=NGRC_data_std_2/np.sqrt
 axs[1].errorbar(training_data_amounts, hyb_data_2, yerr=hyb_data_std_2/np.sqrt(trials), color=COLORS[3], marker='o', 
             markersize=4, ls='solid', linewidth=linewidth, label='Hybrid')
 
-axs[0].set_title(r'$\tau = 0.06, N = 100$', y=1.0, pad=-14)
-axs[1].set_title(r'$\tau = 0.01, N = 1000$', y=1.0, pad=-14)
+axs[0].set_title(fr'$\tau = 0.06, N = {N1}$', y=1.0, pad=-14)
+axs[1].set_title(fr'$\tau = 0.01, N = {N2}$', y=1.0, pad=-14)
 
 axs[1].set_xlabel('Total number of training data time steps $n_{\mathrm{train}}$\n(including warm up/syncing)')
-fig.text(0.04, 0.5, 'Valid prediction time (Lyapunov times)', va='center', rotation='vertical')
+fig.text(0.04, 0.5, 'Mean valid prediction time (Lyapunov times)', va='center', rotation='vertical')
 axs[1].legend(loc='lower right')
 plt.ylim(bottom=0)
 plt.xscale('log')
 
-plt.savefig('6.png', dpi=300)
+plt.tight_layout()
+
+plt.savefig('lorenz_VPT_vs_ntrain.png', dpi=300)

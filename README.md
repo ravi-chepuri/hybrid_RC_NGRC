@@ -1,7 +1,8 @@
 # Hybrid RC NGRC
-This repository contains the code supporting the findings of our paper "Hybridizing Traditional and Next-Generation Reservoir Computing to Accurately and Efficiently Forecast Dynamical Systems."
+This repository contains the code supporting the findings of our paper "Hybridizing Traditional and Next-Generation Reservoir Computing to Accurately and Efficiently Forecast Dynamical Systems" ([arXiv](https://arxiv.org/abs/2403.18953)).
 
-![Hybrid RC-NGRC schematics](./figure.png)
+<!-- ![Hybrid RC-NGRC schematics](./figure.png) -->
+![Hybrid RC-NGRC schematics](./highlight.png)
 
 ## Usage
 
@@ -21,4 +22,4 @@ At this time, `simple_example_lorenz.py` and `VPT_distribution_lorenz.py` are kn
 
 ## Other dynamical systems
 
-To experiment with other dynamical systems (ex. as done in `other_systems.py`), you must pre-generate a long trajectory of that dynamical system so that random initial conditions can be sampled from the attractor. To do so, modify the main function of `hybrid_rc_ngrc/long_trajectory.py` to include the desired dynamical system from the dysts package, and run the script.
+To experiment with dynamical systems other than the Lorenz, Rössler, Double Scroll, or Mackey Glass systems, you must pre-generate a long trajectory of that dynamical system so that random initial conditions can be sampled from the attractor. To do so, modify the main function of `hybrid_rc_ngrc/long_trajectory.py` to include the desired dynamical system from the dysts package, and run the script.

@@ -8,18 +8,18 @@ from dysts.flows import Lorenz
 from context import hybrid_rc_ngrc
 
 
-reservoir_sizes = np.linspace(50, 500, 19).astype(int)
+degrees = np.linspace(0, 20, 21)
 trials = 64
 
-RC_data         = np.zeros(reservoir_sizes.shape)
-RC_data_std     = np.zeros(reservoir_sizes.shape)
-NGRC_data       = np.zeros(reservoir_sizes.shape)
-NGRC_data_std   = np.zeros(reservoir_sizes.shape)
-hyb_data        = np.zeros(reservoir_sizes.shape)
-hyb_data_std    = np.zeros(reservoir_sizes.shape)
+RC_data         = np.zeros(degrees.shape)
+RC_data_std     = np.zeros(degrees.shape)
+NGRC_data       = np.zeros(degrees.shape)
+NGRC_data_std   = np.zeros(degrees.shape)
+hyb_data        = np.zeros(degrees.shape)
+hyb_data_std    = np.zeros(degrees.shape)
 
-for idx, reservoir_size in enumerate(tqdm(reservoir_sizes)):
-    h = hybrid_rc_ngrc.Hyperparameters(N=reservoir_size, prediction_steps=2000)
+for idx, degree in enumerate(tqdm(degrees)):
+    h = hybrid_rc_ngrc.Hyperparameters(degree=degree, prediction_steps=2000)
     VPT_results = np.array(Parallel(n_jobs=-1)(delayed(hybrid_rc_ngrc.do_prediction_trial)(Lorenz, h, return_VPTs=True) 
                               for trial in range(trials)))
     VPT_results /= hybrid_rc_ngrc.lorenz_lyap_time
@@ -32,7 +32,7 @@ for idx, reservoir_size in enumerate(tqdm(reservoir_sizes)):
     NGRC_data_std[idx] = VPTs_NGRC.std()
     hyb_data_std[idx] = VPTs_hyb.std()
 
-# since NGRC data does not depend on reservoir size, use only the first value for plotting
+# since NGRC data does not depend on degree, use only the first value for plotting
 NGRC_data[:] = NGRC_data[0]
 NGRC_data_std[:] = NGRC_data_std[0]
 
@@ -47,19 +47,20 @@ plt.axhline(NGRC_data[0], color=COLORS[2], ls='solid', linewidth=linewidth, labe
 plt.fill_between(np.linspace(-10000, 10000, 5), NGRC_data[0]-NGRC_data_std[0]/np.sqrt(trials), 
                  NGRC_data[0]+NGRC_data_std[0]/np.sqrt(trials), color=COLORS[2], alpha=0.25, label='NGRC')
     
-plt.errorbar(reservoir_sizes, RC_data, yerr=RC_data_std/np.sqrt(trials), color=COLORS[1], marker='s', 
+plt.errorbar(degrees, RC_data, yerr=RC_data_std/np.sqrt(trials), color=COLORS[1], marker='s', 
             markersize=4, ls=ls, linewidth=linewidth, label='RC')
-plt.errorbar(reservoir_sizes, hyb_data, yerr=hyb_data_std/np.sqrt(trials), color=COLORS[3], marker='o', 
+plt.errorbar(degrees, hyb_data, yerr=hyb_data_std/np.sqrt(trials), color=COLORS[3], marker='o', 
             markersize=4, ls=ls, linewidth=linewidth, label='Hybrid RC-NGRC')
 
-plt.xlim((30, 520))
+plt.xlim((-1, 21))
 
-plt.xlabel('Number of nodes in reservoirs $N$')
+plt.xlabel(r'Reservoir degree $\langle k \rangle$')
 plt.ylabel('Mean valid prediction time (Lyapunov times)')
+# plt.legend()
 plt.ylim(bottom=0)
 
 handles, labels = plt.gca().get_legend_handles_labels()
 plt.legend([handles[2], (handles[0], handles[1]), handles[3]], ['RC', 'NGRC', 'Hybrid RC-NGRC'])
 
 plt.tight_layout()
-plt.savefig('lorenz_VPT_vs_reservoir_size.png', dpi=300)
+plt.savefig('lorenz_VPT_vs_degree.png', dpi=300)

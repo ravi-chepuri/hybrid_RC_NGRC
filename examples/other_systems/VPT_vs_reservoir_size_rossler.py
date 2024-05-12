@@ -3,7 +3,7 @@ from joblib import Parallel, delayed
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 
-from dysts.flows import Lorenz
+from dysts.flows import Rossler
 
 from context import hybrid_rc_ngrc
 
@@ -19,10 +19,10 @@ hyb_data        = np.zeros(reservoir_sizes.shape)
 hyb_data_std    = np.zeros(reservoir_sizes.shape)
 
 for idx, reservoir_size in enumerate(tqdm(reservoir_sizes)):
-    h = hybrid_rc_ngrc.Hyperparameters(N=reservoir_size, prediction_steps=2000)
-    VPT_results = np.array(Parallel(n_jobs=-1)(delayed(hybrid_rc_ngrc.do_prediction_trial)(Lorenz, h, return_VPTs=True) 
+    h = hybrid_rc_ngrc.Hyperparameters(N=reservoir_size, prediction_steps=5000, dt=0.1)
+    VPT_results = np.array(Parallel(n_jobs=-1)(delayed(hybrid_rc_ngrc.do_prediction_trial)(Rossler, h, return_VPTs=True) 
                               for trial in range(trials)))
-    VPT_results /= hybrid_rc_ngrc.lorenz_lyap_time
+    VPT_results /= (1 / 0.151)  # lyapunov time from dysts package
     VPTs_RC, VPTs_NGRC, VPTs_hyb = VPT_results.T
 
     RC_data[idx] = VPTs_RC.mean()
@@ -54,6 +54,7 @@ plt.errorbar(reservoir_sizes, hyb_data, yerr=hyb_data_std/np.sqrt(trials), color
 
 plt.xlim((30, 520))
 
+
 plt.xlabel('Number of nodes in reservoirs $N$')
 plt.ylabel('Mean valid prediction time (Lyapunov times)')
 plt.ylim(bottom=0)
@@ -62,4 +63,5 @@ handles, labels = plt.gca().get_legend_handles_labels()
 plt.legend([handles[2], (handles[0], handles[1]), handles[3]], ['RC', 'NGRC', 'Hybrid RC-NGRC'])
 
 plt.tight_layout()
-plt.savefig('lorenz_VPT_vs_reservoir_size.png', dpi=300)
+plt.title('Rossler')
+plt.savefig('rossler_VPT_vs_size.png', dpi=300)
