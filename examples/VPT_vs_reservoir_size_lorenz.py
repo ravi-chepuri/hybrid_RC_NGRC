@@ -8,8 +8,7 @@ from dysts.flows import Lorenz
 from context import hybrid_rc_ngrc
 
 
-# reservoir_sizes = np.linspace(10, 200, 20).astype(int)  # changed from (50, 1000, 20)
-reservoir_sizes = np.linspace(50, 500, 20).astype(int)
+reservoir_sizes = np.linspace(50, 500, 19).astype(int)
 trials = 64
 
 RC_data         = np.zeros(reservoir_sizes.shape)
@@ -50,25 +49,17 @@ plt.fill_between(np.linspace(-10000, 10000, 5), NGRC_data[0]-NGRC_data_std[0]/np
     
 plt.errorbar(reservoir_sizes, RC_data, yerr=RC_data_std/np.sqrt(trials), color=COLORS[1], marker='s', 
             markersize=4, ls=ls, linewidth=linewidth, label='RC')
-# plt.errorbar(reservoir_sizes, NGRC_data, yerr=NGRC_data_std/np.sqrt(trials), color=COLORS[2], marker='D', 
-#             markersize=4, ls=ls, linewidth=linewidth, label='NGRC')
 plt.errorbar(reservoir_sizes, hyb_data, yerr=hyb_data_std/np.sqrt(trials), color=COLORS[3], marker='o', 
             markersize=4, ls=ls, linewidth=linewidth, label='Hybrid RC-NGRC')
 
-# plt.xlim((25, 1025))
-plt.xlim((0, 550))
-
+plt.xlim((30, 520))
 
 plt.xlabel('Number of nodes in reservoirs $N$')
-plt.ylabel('Valid prediction time (Lyapunov times)')
-# plt.legend()
+plt.ylabel('Mean valid prediction time (Lyapunov times)')
 plt.ylim(bottom=0)
 
 handles, labels = plt.gca().get_legend_handles_labels()
 plt.legend([handles[2], (handles[0], handles[1]), handles[3]], ['RC', 'NGRC', 'Hybrid RC-NGRC'])
 
-# order = [1,0,2]
-# plt.legend([handles[idx] for idx in order],[labels[idx] for idx in order])
-
 plt.tight_layout()
-plt.savefig('4.png', dpi=300)
+plt.savefig('lorenz_VPT_vs_reservoir_size.png', dpi=300)

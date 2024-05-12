@@ -32,4 +32,4 @@ for idx, timestep in enumerate(tqdm(timesteps)):
 
 hybrid_rc_ngrc.plotting.VPT_vs_hyperparam(timesteps, trials, RC_data, RC_data_std, NGRC_data, NGRC_data_std, 
                                     hyb_data, hyb_data_std, xlabel=r'Timestep $\tau$', ls='solid',
-                                    fname='5.png')
+                                    fname='lorenz_VPT_vs_timestep.png')
