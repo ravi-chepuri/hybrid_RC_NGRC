@@ -11,7 +11,8 @@ from dysts.base import DynSys
 
 def do_prediction_trial(system: DynSys, h: Hyperparameters, 
                         attractor_means_and_stds=None, component=None,
-                        return_VPTs=False, return_diverge_times=False, return_avg_map_err=False):
+                        return_VPTs=False, threshold=0.9,
+                        return_diverge_times=False, return_avg_map_err=False):
 
     traj, t = dyn_systems.make_trajectory_with_random_init_cond(system, h.train_length + h.prediction_steps, h.dt, 
                                                                 int_dt=h.int_dt, component=component)
@@ -67,9 +68,9 @@ def do_prediction_trial(system: DynSys, h: Hyperparameters,
     t_pred = np.linspace(0, h.prediction_steps * h.dt - h.dt, h.prediction_steps)
 
     if return_VPTs:
-        VPT_RC      = prediction_analysis.valid_pred_time(predictions_RC, actual, t_pred)
-        VPT_NGRC    = prediction_analysis.valid_pred_time(predictions_NGRC, actual, t_pred)
-        VPT_hyb     = prediction_analysis.valid_pred_time(predictions_hyb, actual, t_pred)
+        VPT_RC      = prediction_analysis.valid_pred_time(predictions_RC, actual, t_pred, threshold=threshold)
+        VPT_NGRC    = prediction_analysis.valid_pred_time(predictions_NGRC, actual, t_pred, threshold=threshold)
+        VPT_hyb     = prediction_analysis.valid_pred_time(predictions_hyb, actual, t_pred, threshold=threshold)
         return VPT_RC, VPT_NGRC, VPT_hyb
     
     if return_diverge_times:

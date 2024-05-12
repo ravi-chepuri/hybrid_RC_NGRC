@@ -9,11 +9,8 @@ COLORS = ['#000000', '#004488', '#DDAA33', '#BB5566']  #https://personal.sron.nl
 
 def representative_trajectories(t_pred, actual, predictions_RC, predictions_NGRC, predictions_hyb, 
                                      component=0, plot_timesteps=10000, colors=COLORS, fname='2a.png',
-                                     system='Lorenz'):
+                                     VPT_lines=True, system='Lorenz'):
     
-    VPT_hyb  = prediction_analysis.valid_pred_time(predictions_hyb,  actual, t_pred)
-    VPT_RC   = prediction_analysis.valid_pred_time(predictions_RC,   actual, t_pred)
-    VPT_NGRC = prediction_analysis.valid_pred_time(predictions_NGRC, actual, t_pred)
 
     fig, axs = plt.subplots(3, 1, figsize=(4*1.5, 3*1.5), sharex=True, sharey=False)
 
@@ -25,25 +22,30 @@ def representative_trajectories(t_pred, actual, predictions_RC, predictions_NGRC
     axs[1].plot(t_pred[:plot_timesteps], predictions_NGRC[component, :plot_timesteps], color=colors[2], label='NGRC')
     axs[2].plot(t_pred[:plot_timesteps], predictions_hyb[component, :plot_timesteps], color=colors[3], label='Hybrid RC-NGRC')
 
-    axs[0].axvline(VPT_RC, ls='-.', color='grey')
-    axs[1].axvline(VPT_NGRC, ls='-.', color='grey')
-    axs[2].axvline(VPT_hyb, ls='-.', color='grey')
+    if VPT_lines:
+        VPT_hyb  = prediction_analysis.valid_pred_time(predictions_hyb,  actual, t_pred)
+        VPT_RC   = prediction_analysis.valid_pred_time(predictions_RC,   actual, t_pred)
+        VPT_NGRC = prediction_analysis.valid_pred_time(predictions_NGRC, actual, t_pred)
+        axs[0].axvline(VPT_RC, ls='-.', color='grey')
+        axs[1].axvline(VPT_NGRC, ls='-.', color='grey')
+        axs[2].axvline(VPT_hyb, ls='-.', color='grey')
 
     for ax in axs: ax.legend(loc='upper right', framealpha=1.)
 
     fig.text(0.04, 0.5, f'{system} system $x$ variable', va='center', rotation='vertical')
     plt.xlabel('Prediction time (Lyapunov times)')
-    plt.suptitle(f'Autonomous predictions of {system} system\n(representative example)')
+    # plt.suptitle(f'Autonomous predictions of {system} system\n(representative example)')
 
     plt.savefig(fname)
 
 
 def valid_prediction_time_violins(VPTs_RC, VPTs_NGRC, VPTs_hyb,
-                                       colors=COLORS, fname='2b.png'):
+                                  title='Short term predictive power', labels=['RC', 'NGRC', 'Hybrid RC-NGRC'],
+                                  colors=COLORS, fname='2b.png'):
     
     fig = plt.figure(figsize=(2.5*1.5, 3*1.5))
     violin = plt.violinplot([VPTs_RC, VPTs_NGRC, VPTs_hyb], showmedians=True, quantiles=[[0.25, 0.75]]*3)
-    plt.xticks(ticks=[1,2,3], labels=['RC', 'NGRC', 'Hybrid RC-NGRC'])
+    plt.xticks(ticks=[1,2,3], labels=labels)
     plt.ylabel('Valid prediction time (Lyapunov times)')
     plt.ylim(bottom=0)
 
@@ -58,15 +60,18 @@ def valid_prediction_time_violins(VPTs_RC, VPTs_NGRC, VPTs_hyb,
         vp.set_edgecolor('black')
         vp.set_linewidth(1)
 
-    plt.title('Short term predictive power')
+    # plt.title(title)
+
+    plt.tight_layout()
 
     plt.savefig(fname)
 
 
 def phase_space_trajectories_3d(actual, predictions_RC, predictions_NGRC, predictions_hyb, 
-                                     plot_timesteps=10000, colors=COLORS, fname='3a.png'):
+                                     plot_timesteps=10000, colors=COLORS, fname='3a.png',
+                                     figsize=(3*1.5, 3*1.5)):
     
-    fig, axs = plt.subplots(2, 2, figsize=(3*1.5, 3*1.5))
+    fig, axs = plt.subplots(2, 2, figsize=figsize)
 
     for row in axs:
         for ax in row:
@@ -77,12 +82,15 @@ def phase_space_trajectories_3d(actual, predictions_RC, predictions_NGRC, predic
             ax.set_xticks([-2, 2])
             ax.set_yticks([-2, 2])
             ax.set_xlim([-2.7, 2.7])
-            ax.set_ylim([-2.7, 2.7])
+            # ax.set_ylim([-2.7, 2.7])
+            ax.set_ylim([-2.7, 3.5])
+            # ax.set_ylim([-2.7, 4.5])
+            if figsize==(8.0139, 6.2739): ax.set_box_aspect(1)
 
-    axs[0, 0].set_title('True system')
-    axs[0, 1].set_title('RC')
-    axs[1, 0].set_title('NGRC')
-    axs[1, 1].set_title('Hybrid RC-NGRC')
+    axs[0, 0].set_title('True Lorenz system', y=1.0, pad=-14, size=11, bbox=dict(boxstyle='round', fc='w', edgecolor='0.8'))
+    axs[0, 1].set_title('Weak/small RC', y=1.0, pad=-14, size=11, bbox=dict(boxstyle='round', fc='w', edgecolor='0.8'))
+    axs[1, 0].set_title('Weak NGRC', y=1.0, pad=-14, size=11, bbox=dict(boxstyle='round', fc='w', edgecolor='0.8'))
+    axs[1, 1].set_title('Hybrid RC-NGRC', y=1.0, pad=-14, size=11, bbox=dict(boxstyle='round', fc='w', edgecolor='0.8'))
 
     axs[0, 1].plot(predictions_RC[0, :plot_timesteps], predictions_RC[2, :plot_timesteps], color=colors[1], lw=0.5, alpha=1.)
     axs[1, 0].plot(predictions_NGRC[0, :plot_timesteps], predictions_NGRC[2, :plot_timesteps], color=colors[2], lw=0.5, alpha=1.)
@@ -111,7 +119,7 @@ def power_spectra_trajectories(actual, predictions_RC, predictions_NGRC, predict
 
     plt.xlabel('Frequency')
     plt.ylabel('Power spectral density')
-    plt.title('Power spectra of autonomous predictions')
+    # plt.title('Power spectra of autonomous predictions')
     plt.xlim((0, 0.3))
     plt.ylim((1e-3, 1e3))
 
@@ -135,7 +143,7 @@ def VPT_vs_hyperparam(reservoir_sizes, trials, RC_data, RC_data_std, NGRC_data, 
                  markersize=4, ls=ls, linewidth=linewidth, label='Hybrid RC-NGRC')
 
     plt.xlabel(xlabel)
-    plt.ylabel('Valid prediction time (Lyapunov times)')
+    plt.ylabel('Mean valid prediction time (Lyapunov times)')
     plt.legend()
     plt.ylim(bottom=0)
 

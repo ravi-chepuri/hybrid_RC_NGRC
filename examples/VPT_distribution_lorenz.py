@@ -16,7 +16,7 @@ VPT_results = np.array(Parallel(n_jobs=-1)(delayed(hybrid_rc_ngrc.do_prediction_
 VPT_results /= hybrid_rc_ngrc.lorenz_lyap_time
 VPTs_RC, VPTs_NGRC, VPTs_hyb = VPT_results.T
 
-hybrid_rc_ngrc.plotting.valid_prediction_time_violins(VPTs_RC, VPTs_NGRC, VPTs_hyb, fname='2b.png')
+hybrid_rc_ngrc.plotting.valid_prediction_time_violins(VPTs_RC, VPTs_NGRC, VPTs_hyb, fname='2b.svg')
 
 mRC   = np.median(VPTs_RC)
 mNGRC = np.median(VPTs_NGRC)

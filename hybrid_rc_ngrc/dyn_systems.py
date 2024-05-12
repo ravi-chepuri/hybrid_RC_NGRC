@@ -41,9 +41,9 @@ def make_trajectory_with_random_init_cond(system: DynSys, num_timesteps, dt, int
 
     with np.errstate(divide='ignore', invalid='ignore'):
         if system is flows.MackeyGlass:
-            traj = model.make_trajectory(int(num_timesteps*multiple*1.1), method=method, d=1).T
+            traj = model.make_trajectory(int(num_timesteps*multiple*1.1), method='Euler', resample=False, d=1).T
         else:
-            traj = model.make_trajectory(int(num_timesteps*multiple*1.1), method=method).T
+            traj = model.make_trajectory(int(num_timesteps*multiple*1.1), method=method, resample=False).T
     
     traj = traj[:, -num_timesteps*multiple:]
     traj = traj[:, ::multiple]  # subsample to desired time step
