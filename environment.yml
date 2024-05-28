@@ -2,14 +2,14 @@ name: hybrid_rc_ngrc_environment
 channels:
   - defaults
 dependencies:
-  - python=3.11
-  - numpy
-  - matplotlib
-  - scipy
-  - scikit-learn
-  - joblib
-  - tqdm
-  - numba
+  - python=3.11.5
+  - numpy=1.26.0
+  - matplotlib=3.7.2
+  - scipy=1.11.3
+  - scikit-learn=1.2.2
+  - joblib=1.2.0
+  - tqdm=4.65.0
+  - numba=0.58.1
   - pip=23.3=py311hca03da5_0
   - pip:
       - dysts==0.1
