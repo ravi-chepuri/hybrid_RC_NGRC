@@ -1,5 +1,5 @@
 # Hybrid RC NGRC
-This repository contains the code supporting the findings of our paper "Hybridizing Traditional and Next-Generation Reservoir Computing to Accurately and Efficiently Forecast Dynamical Systems" ([arXiv](https://arxiv.org/abs/2403.18953)).
+This repository contains the code supporting the findings of our paper "Hybridizing Traditional and Next-Generation Reservoir Computing to Accurately and Efficiently Forecast Dynamical Systems" ([journal link](https://doi.org/10.1063/5.0206232), [arXiv](https://arxiv.org/abs/2403.18953)).
 
 <!-- ![Hybrid RC-NGRC schematics](./figure.png) -->
 ![Hybrid RC-NGRC schematics](./highlight.png)
